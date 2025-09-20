@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_authflow/presentation/feature/auth/view_model/auth_vm.dart';
 import 'package:supabase_authflow/presentation/feature/auth/widgets/custom_button.dart';
 import 'package:supabase_authflow/presentation/feature/auth/widgets/custom_text_field.dart';
 
@@ -7,6 +9,7 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final authVm = Provider.of<AuthVm>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -56,7 +59,6 @@ class SignupScreen extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           child: RichText(
-                            textScaleFactor: 1.0,
                             text: TextSpan(
                               text: 'Already have an account?',
                               style: TextStyle(
@@ -72,41 +74,62 @@ class SignupScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            ),
+                            ), textScaler: TextScaler.linear(1.0),
                           ),
                         ),
                         const SizedBox(height: 20),
                         CustomTextField(
                           label: 'Full Name',
                           hint: 'Enter your full name',
-                          controller: TextEditingController(),
+                          controller: authVm.usernameController,
                         ),
                         const SizedBox(height: 20),
                         CustomTextField(
                           label: 'Email',
                           hint: 'Enter your email',
-                          controller: TextEditingController(),
+                          controller: authVm.emailController,
+      
+                          
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
                           label: 'Birthdate',
                           hint: 'Enter your birthdate',
-                          controller: TextEditingController(),
+                          controller: authVm.dateOfBirthController,
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
                           label: 'Phone Number',
                           hint: 'Enter your phone number',
-                          controller: TextEditingController(),
+                          controller: authVm.phoneNumberController,
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
                           label: 'Set Password',
                           hint: 'Enter your password',
-                          controller: TextEditingController(),
+                          controller: authVm.passwordController,
                         ),
                         const SizedBox(height: 30),
-                        CustomButton(text: 'Register', onPressed: () {}),
+                       CustomButton(
+                            text: authVm.isLoading ? 'Registering...' : 'Register',
+                            onPressed: authVm.isLoading
+                                ? () {}
+                                : () {
+                                    authVm.signUpWithEmail(
+                                      authVm.emailController.text.trim(),
+                                      authVm.passwordController.text.trim(),
+                                    ).then((_) {
+                                      if (authVm.errorMessage != null) {
+                                        // ignore: use_build_context_synchronously
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(authVm.errorMessage!),
+                                          ),
+                                        );
+                                      }
+                                    });
+                                  },
+                          ),
                       ],
                     ),
                   ),

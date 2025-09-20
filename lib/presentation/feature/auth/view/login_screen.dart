@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_authflow/presentation/feature/auth/view/siignup_screen.dart';
+import 'package:supabase_authflow/presentation/feature/auth/view_model/auth_vm.dart';
 import 'package:supabase_authflow/presentation/feature/auth/widgets/custom_button.dart';
 import 'package:supabase_authflow/presentation/feature/auth/widgets/custom_text_field.dart';
 import 'package:supabase_authflow/presentation/feature/auth/widgets/cutsom_icon_button.dart';
@@ -9,6 +13,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authVm = Provider.of<AuthVm>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -83,12 +88,12 @@ class LoginScreen extends StatelessWidget {
                         CustomTextField(
                           label: 'Email',
                           hint: 'Enter your email',
-                          controller: TextEditingController(),
+                          controller: authVm.emailController,
                         ),
                         CustomTextField(
                           label: 'Password',
                           hint: 'Enter your password',
-                          controller: TextEditingController(),
+                          controller: authVm.passwordController,
                         ),
                         const SizedBox(height: 10),
 
@@ -113,7 +118,31 @@ class LoginScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        CustomButton(text: 'Login', onPressed: () {}),
+                        CustomButton(
+                          text: 'Login',
+                          onPressed: () {
+                            authVm
+                                .loginWithEmail(
+                                  authVm.emailController.text.trim(),
+                                  authVm.passwordController.text.trim(),
+                                )
+                                .then((_) {
+                                  if (authVm.isVerified) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Login Successful!'),
+                                      ),
+                                    );
+                                  } else if (authVm.errorMessage != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(authVm.errorMessage!),
+                                      ),
+                                    );
+                                  }
+                                });
+                          },
+                        ),
                         const SizedBox(height: 20),
                         const Text('Or'),
                         const SizedBox(height: 20),
