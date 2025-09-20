@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:supabase_authflow/presentation/feature/auth/view/home_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -41,7 +44,7 @@ class AuthVm extends ChangeNotifier{
   }
 
   /// Login after email verification
-  Future<void> loginWithEmail(String email, String password) async {
+  Future<void> loginWithEmail(String email, String password, BuildContext context) async {
     try {
       isLoading = true;
       errorMessage = null;
@@ -54,6 +57,12 @@ class AuthVm extends ChangeNotifier{
 
       if (response.user != null && response.user!.emailConfirmedAt != null) {
         isVerified = true;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
       } else {
         errorMessage = "Please verify your email before logging in.";
       }

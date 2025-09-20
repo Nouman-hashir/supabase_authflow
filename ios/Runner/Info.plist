@@ -41,7 +41,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -50,11 +49,7 @@
 				<string>io.supabase.flutter</string>
 			</array>
 		</dict>
-	</array>
-
-  </dict>
-</array>
-
+	</array>	
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

@@ -125,6 +125,7 @@ class LoginScreen extends StatelessWidget {
                                 .loginWithEmail(
                                   authVm.emailController.text.trim(),
                                   authVm.passwordController.text.trim(),
+                                  context,
                                 )
                                 .then((_) {
                                   if (authVm.isVerified) {
